@@ -1,5 +1,7 @@
 import uiautomator2 as u2
 import time
+
+# 连接设备
 try:
 	d=u2.connect()
 	d.info
@@ -18,6 +20,7 @@ if not choice in {1,2,3}:
 	print("别闹，输入1,2或者3")
 	exit()
 
+# 进入安卓设置蓝牙页
 if not choice == 3:
 	d.app_start("com.android.car.settings", stop=True)
 	d(text="Settings").wait(timeout=10)
@@ -31,6 +34,7 @@ while 1:
 	print("循环第", counter, "次")
 	counter += 1
 
+	# 从电话进入蓝牙
 	if choice==3:
 		d.app_start("com.android.car.dialer", stop=True)
 		if not d(text="Connect to Bluetooth").click_exists(timeout=10):
@@ -41,6 +45,7 @@ while 1:
 		d.swipe(1840,115,1700,115,0.05)
 		time_start = time.time()
 		if choice == 2:
+			# 回到主页，点击蓝牙开关，回到蓝牙页
 			d.press("back")
 			d.press("back")
 			d(text="Bluetooth").click()
@@ -50,6 +55,7 @@ while 1:
 			d(text="Bluetooth").click()
 			time.sleep(0.5)
 		else:
+			# 直接开蓝牙
 			time.sleep(0.5)
 			d.swipe(1800,115,1900,115,0.05)
 	except Exception:
@@ -59,6 +65,7 @@ while 1:
 	if d(text="Bluetooth will turn on to pair").wait_gone(timeout=60):
 		d(text="Pair new device").click()
 		if d(text="Vehicle name").wait(timeout=5):
+			# 蓝牙开启成功
 			time_end = time.time()
 			d.press("back")
 		else:
