@@ -9,7 +9,7 @@ except Exception:
 	print("无法连接到设备\n请检查连接")
 	exit()
 
-choice = input("选择测试方式：\n\t1.Settings页面开关蓝牙\n\t2.蓝牙页面开关蓝牙\n"
+choice = input("选择测试方式：\n\t1.蓝牙页面开关蓝牙\n\t2.Settings页面开关蓝牙\n"
 	"\t3.从电话进入蓝牙\n> ")
 try:
 	choice = int(choice)
