@@ -2,6 +2,7 @@ import uiautomator2 as u2
 import subprocess
 import time
 app = "com.google.android.car.kitchensink"
+number = 10000
 
 try:
 	d=u2.connect()
@@ -50,8 +51,9 @@ d(text="BLUETOOTH HEADSET").click()
 d(text="PICK DEVICE").click()
 d(text="Connected").click_exists(timeout=3)
 d(text="Enter number").click()
-d.send_keys("10000")
+d.send_keys(number)
 while(1):
 	d(text="START CALL").click()
 	time.sleep(5)
 	d(text="END CALL").click()
+	time.sleep(3)

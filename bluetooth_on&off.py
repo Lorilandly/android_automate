@@ -37,8 +37,9 @@ while 1:
 	# 从电话进入蓝牙
 	if choice==3:
 		d.app_start("com.android.car.dialer", stop=True)
-		if not d(text="Connect to Bluetooth").click_exists(timeout=10):
+		if not d(text="Connect to Bluetooth").click_exists(timeout=3):
 			print("似乎已连上蓝牙电话\n请断开后重试")
+			exit()
 
 	try:
 		time.sleep(0.5)
