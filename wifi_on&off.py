@@ -2,7 +2,7 @@ import uiautomator2 as u2
 import time
 
 SSID = "Semidrive"
-passwork = "M122122122Z"
+password = "M122122122Z"
 
 try:
 	d=u2.connect()
