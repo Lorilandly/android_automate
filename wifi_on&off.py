@@ -1,5 +1,9 @@
 import uiautomator2 as u2
 import time
+
+SSID = "Semidrive"
+passwork = "M122122122Z"
+
 try:
 	d=u2.connect()
 	d.info
@@ -25,8 +29,8 @@ while 1:
 		print("人为操作打断")
 		break
 
-	if d(text="Semidrive").wait(timeout=3):
-		d(text="Semidrive").click()
+	if d(text=SSID).wait(timeout=3):
+		d(text=SSID).click()
 	else:
 		print("未检测到WiFi")
 		break
@@ -35,7 +39,7 @@ while 1:
 		d.press("back")
 
 	if d(text="Show password").exists():
-		d.send_keys("M122122122Z")
+		d.send_keys(password)
 		d(text="OK").click()
 		
 	if not (d(text="Connected, no internet").wait(timeout=5) or d(text="Limited connection").exists()):
