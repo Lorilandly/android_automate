@@ -12,7 +12,8 @@ d(text="More").click()
 d(scrollable=True).scroll.to(text="Bluetooth")
 d(text="Bluetooth").click()
 # 蓝牙开
-d.swipe(1800,115,1900,115,0.05)
+switch = d.xpath('//*[@resource-id="com.android.car.settings:id/toggle_switch"]').rect
+d.swipe(switch[0]+switch[2]//3, switch[1]+switch[3]//2, switch[0]+200, switch[1]+switch[3]//2)
 if not d(text="Bluetooth will turn on to pair").wait_gone(timeout=60):
 	print("蓝牙开启失败")
 	exit()
@@ -25,7 +26,8 @@ if d(text="Paired devices").exists():
 		print(f"发现{len(paired)-1}个设备")
 		choice = int(input("选择第几个> "))
 	# 点进选的设备的设置页
-	d.click(1680,paired[choice].center()[1])
+	x_coor = d(resourceId='android:id/widget_frame').center()[0]
+	d.click(x_coor,paired[choice].center()[1])
 else:
 	# d(text="Pair new device").click()
 	print("No paired device")

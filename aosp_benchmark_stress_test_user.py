@@ -9,7 +9,7 @@ logging.basicConfig(level = logging.INFO,format = '%(asctime)s - %(name)s - %(le
 logger = logging.getLogger(__name__)
 sleep(5)
 
-d=u2.connect_usb('0123459876')
+d=u2.connect()
 sleep(5)
 
 

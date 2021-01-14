@@ -7,26 +7,39 @@ import logging
 #config logging
 logging.basicConfig(level = logging.INFO,format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-sleep(5)
 
-d=u2.connect_usb('0123459876')
-sleep(5)
+d=u2.connect()
+disp = d.info
+X = disp['displaySizeDpX']
+Y = disp['displaySizeDpY']
 
-#Enter all apps
-d.xpath('//*[@resource-id="com.android.systemui:id/grid_nav"]/android.widget.LinearLayout[1]/android.widget.ImageButton[1]').click()
-sleep(2)
-#start_Gallery
-d(scrollable=True).scroll.to(text="Gallery")
-sleep(1)
-d(resourceId="com.android.car.carlauncher:id/app_name", text="Gallery").click()
-sleep(5)
+# enter gallery
+d.app_start("com.android.gallery3d", stop=True)
+d(text='Albums').wait()
 
 #enter movie file
-d.click(935,183)
-sleep(2)
+d.click(0.5*X,0.3*Y)
+d(text='Movies').wait()
 
 #for i in range(1,3):
 while True:
+    # press on video
+    d.click(0.4*X,0.3*Y)
+    sleep(1)
+    for i in range(10):
+        for j in range(20):
+            d.click(0.4*X,0.4*Y)
+        d.click(0.5*X,0.4*Y)
+        sleep(10)
+        for j in range(20):
+            d.click(0.4*X,0.4*Y)
+        d.press('back')
+        sleep(1)
+        d.swipe(0.9*X,0.5*Y,0,0.5*Y)
+        sleep(1)
+    d.press('back')
+    sleep(1)
+    continue
 #start test
     d.click(134,204)
     sleep(1)

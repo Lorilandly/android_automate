@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
+Test_Music/
+Test_video/
+Test_Image/
 
 # C extensions
 *.so

@@ -1,13 +1,15 @@
 import uiautomator2 as u2
 import time
 
+wait_time = 60
+
 # 连接设备
 try:
 	d=u2.connect()
 	d.info
 except Exception:
 	print("无法连接到设备\n请检查连接")
-	exit()
+	raise ConnectionError
 
 choice = input("选择测试方式：\n\t1.蓝牙页面开关蓝牙\n\t2.Settings页面开关蓝牙\n"
 	"\t3.从电话进入蓝牙\n> ")
@@ -43,13 +45,21 @@ while 1:
 
 	try:
 		time.sleep(0.5)
-		d.swipe(1840,115,1700,115,0.05)
+		# 蓝牙开关坐标
+		switch = d.xpath('//*[@resource-id="com.android.car.settings:id/toggle_switch"]').rect
+		# 关
+		d.swipe(switch[0]+switch[2]//3*2, switch[1]+switch[3]//2, switch[0]-100, switch[1]+switch[3]//2)
+
+		if not d(text='Bluetooth will turn on to pair').wait(timeout=3):
+			print('Error')
+			exit()
 		time_start = time.time()
 		if choice == 2:
 			# 回到主页，点击蓝牙开关，回到蓝牙页
 			d.press("back")
 			d.press("back")
-			d(text="Bluetooth").click()
+			# bluetooth icon
+			d.xpath('//*[@resource-id="com.android.car.settings:id/nested_recycler_view_layout"]/androidx.recyclerview.widget.RecyclerView[1]/android.widget.LinearLayout[2]').click()
 			time.sleep(0.5)
 			d(text="More").click()
 			d(scrollable=True).scroll.to(text="Bluetooth")
@@ -58,12 +68,12 @@ while 1:
 		else:
 			# 直接开蓝牙
 			time.sleep(0.5)
-			d.swipe(1800,115,1900,115,0.05)
+			d.swipe(switch[0]+switch[2]//3, switch[1]+switch[3]//2, switch[0]+200, switch[1]+switch[3]//2)
 	except Exception:
 		print("人为操作打断")
 		break
 
-	if d(text="Bluetooth will turn on to pair").wait_gone(timeout=60):
+	if d(text="Bluetooth will turn on to pair").wait_gone(timeout=wait_time):
 		d(text="Pair new device").click()
 		if d(text="Vehicle name").wait(timeout=5):
 			# 蓝牙开启成功

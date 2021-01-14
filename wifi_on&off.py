@@ -9,29 +9,37 @@ try:
 	d.info
 except Exception:
 	print("无法连接到设备\n请检查连接")
-	exit()
+	raise ConnectionError
+	
 d.app_start("com.android.car.settings", stop=True)
 d(text="Settings").wait(timeout=10)
-d.long_click(400,400,1)
+d(text="More").click()
+d(scrollable=True).scroll.to(text="Network & internet")
+d(text="Network & internet").click()
+d(text="Wi‑Fi").click()
+
 counter = 1
 print("开始WiFi启停测试")
+
+switch = d.xpath('//*[@resource-id="com.android.car.settings:id/toggle_switch"]').rect
 
 while 1:
 	print("循环第", counter, "次")
 	counter += 1
 
 	try:
-		d.swipe(1840,115,1700,115,0.05)
+		# off
+		d.swipe(switch[0]+switch[2]//3*2, switch[1]+switch[3]//2, switch[0]-100, switch[1]+switch[3]//2)
 		time.sleep(0.5)
-		d.swipe(1800,115,1900,115,0.05)
+		# on
+		d.swipe(switch[0]+switch[2]//3, switch[1]+switch[3]//2, switch[0]+200, switch[1]+switch[3]//2)
 		time.sleep(1)
+		time_start = time.time()
 	except Exception:
 		print("人为操作打断")
 		break
 
-	if d(text=SSID).wait(timeout=3):
-		d(text=SSID).click()
-	else:
+	if not d(text=SSID).click_exists(timeout=3):
 		print("未检测到WiFi")
 		break
 
@@ -45,3 +53,5 @@ while 1:
 	if not (d(text="Connected, no internet").wait(timeout=5) or d(text="Limited connection").exists()):
 		print("Connection failed")
 		break
+
+	print(f'   {time.time()-time_start:.2f} seconds')

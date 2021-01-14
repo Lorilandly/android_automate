@@ -9,17 +9,11 @@ logging.basicConfig(level = logging.INFO,format = '%(asctime)s - %(name)s - %(le
 logger = logging.getLogger(__name__)
 sleep(5)
 
-d=u2.connect_usb('0123459876')
+d=u2.connect()
 sleep(5)
 
-#Enter all apps
-d.xpath('//*[@resource-id="com.android.systemui:id/grid_nav"]/android.widget.LinearLayout[1]/android.widget.ImageButton[1]').click()
-sleep(2)
-#start_Gallery
-d(scrollable=True).scroll.to(text="Gallery")
-sleep(1)
-d(resourceId="com.android.car.carlauncher:id/app_name", text="Gallery").click()
-sleep(5)
+# enter gallery
+d.app_start("com.android.gallery3d", stop=True)
 
 #enter movie file
 d.click(616,160)
