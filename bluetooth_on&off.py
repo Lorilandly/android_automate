@@ -30,11 +30,12 @@ if not choice == 3:
 	d(scrollable=True).scroll.to(text="Bluetooth")
 	d(text="Bluetooth").click()
 
+results = {'ave' : 0, 'max' : 0, 'min' : wait_time}
 counter = 1
 
 while 1:
-	print("循环第", counter, "次")
-	counter += 1
+	print("    循环第", counter, "次")
+	print(f"平均:{results['ave']:.2f}, 最小:{results['min']:.2f}, 最大:{results['max']:.2f}", end = '\r')
 
 	# 从电话进入蓝牙
 	if choice==3:
@@ -77,12 +78,18 @@ while 1:
 		d(text="Pair new device").click()
 		if d(text="Vehicle name").wait(timeout=5):
 			# 蓝牙开启成功
-			time_end = time.time()
+			time_cost = time.time()-time_start
 			d.press("back")
 		else:
 			break
 	else:
 		break
-	print(f"  花费{time_end-time_start:.2f}秒\n")
+	if time_cost > results['max']:
+		results['max'] = time_cost
+	if time_cost < results['min']:
+		results['min'] = time_cost
+	results['ave'] = results['ave'] - results['ave']/counter + time_cost/counter
+	print(f"\x1b[2K      花费{time_cost:.2f}秒\n")
+	counter += 1
 
 print("蓝牙开启超时!")

@@ -1,11 +1,15 @@
 import uiautomator2 as u2
 import time
+
+wait_time = 60
+
 try:
 	d=u2.connect()
 	d.info
 except Exception:
 	print("无法连接到设备\n请检查连接")
 	exit()
+
 d.app_start("com.android.car.settings", stop=True)
 d(text="Settings").wait(timeout=10)
 d(text="More").click()
@@ -37,11 +41,12 @@ else:
 		# '"]/androidx.recyclerview.widget.RecyclerView[1]/android.widget.LinearLayout[2'
 		# ']/android.widget.LinearLayout[1]').click()
 counter = 1
+results = {'ave' : 0, 'max' : 0, 'min' : wait_time}
 # 右上角按钮
 button = d.xpath('//*[@resource-id="com.android.car.settings:id/action_button1"]')
 while 1:
-	print("循环第", counter, "次")
-	counter += 1
+	print("    循环第", counter, "次")
+	print(f"平均:{results['ave']:.2f}, 最小:{results['min']:.2f}, 最大:{results['max']:.2f}", end = '\r')
 
 	time.sleep(1)
 	time_start = time.time()
@@ -54,13 +59,25 @@ while 1:
 
 	# 开蓝牙
 	button.click()
-	if d(text="Connected").wait(timeout=30):
-		if d.xpath('//*[@resource-id="android:id/summary"]').text != "Connected":
+	if d(text="Disconnect").wait(timeout=10):
+		# if d.xpath('//*[@resource-id="android:id/summary"]').text != "Connected":
+		if not d(text='Connected').wait(timeout=wait_time):
+			element_text = d.xpath('//*[@resource-id="android:id/summary"]').text
+			print(f'\n\n连接时间超过{wait_time}秒!!\n连接异常状态为"{element_text}"')
 			break
 		# 连上设备
-		time_end = time.time()
+		time_cost = time.time() - time_start
 	else:
+		print(f'\n\n尝试连接失败,检查connect按钮是否失效')
 		break
-	print(f"  花费{time_end-time_start:.2f}秒\n")
 
-print("连接失败!")
+	if time_cost > results['max']:
+		results['max'] = time_cost
+	if time_cost < results['min']:
+		results['min'] = time_cost
+	results['ave'] = results['ave'] - results['ave']/counter + time_cost/counter
+	print(f"\x1b[K      花费{time_cost:.2f}秒\n")
+
+	counter += 1
+
+raise TimeoutError

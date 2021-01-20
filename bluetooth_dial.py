@@ -12,9 +12,11 @@ except Exception:
 	exit()
 
 if not app in d.shell("pm list packages").output:
-	if not subprocess.run("adb install ./EmbeddedKitchenSinkApp.apk",shell=True).returncode == 0:
+	try:
+		subprocess.run("adb install ./EmbeddedKitchenSinkApp.apk",shell=True).returncode == 0:
+	except Exception:
 		print("unknown error")
-		exit()
+		raise
 
 d.app_start("com.android.car.settings", stop=True)
 d(text="Settings").wait(timeout=10)
